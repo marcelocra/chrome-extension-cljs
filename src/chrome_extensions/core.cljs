@@ -2,10 +2,6 @@
 
 (enable-console-print!)
 
-; (defn command-selector
-;   [command]
-;   (.log js/console command))
-
 (def constants {:commands {:tab-to-window "print-to-console"}})
 
 (defn command?
