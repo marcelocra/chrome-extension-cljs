@@ -9,7 +9,11 @@
     ]
   },
   "permissions": [
+    "activeTab",
+    "alarms",
     "commands",
+    "contextMenus",
+    "storage",
     "tabs"
   ],
   "commands": {
@@ -18,6 +22,12 @@
         "default": "Alt+Shift+P"
       },
       "description": "Print to console"
+    },
+    "print-history-items": {
+      "suggested_key": {
+        "default": "Alt+Shift+H"
+      },
+      "description": "Print all elements saved to history"
     }
   }
 }
