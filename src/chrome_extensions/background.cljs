@@ -3,4 +3,4 @@
 
 (enable-console-print!)
 
-(.addListener (.. js/chrome -commands -onCommand) command-selector)
+(.addListener js/chrome.commands.onCommand command-selector)
