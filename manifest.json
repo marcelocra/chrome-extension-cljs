@@ -9,7 +9,8 @@
     ]
   },
   "permissions": [
-    "commands"
+    "commands",
+    "tabs"
   ],
   "commands": {
     "print-to-console": {
