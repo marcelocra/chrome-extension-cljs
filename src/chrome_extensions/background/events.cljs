@@ -1,4 +1,4 @@
-(ns chrome-extensions.core)
+(ns chrome-extensions.background.events)
 
 (enable-console-print!)
 
