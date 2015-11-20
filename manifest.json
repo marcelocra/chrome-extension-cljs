@@ -1,0 +1,22 @@
+{
+  "manifest_version": 2,
+  "name": "Chrome Extension with ClojureScript",
+  "description": "Does nothing for now. Just testing ClojureScript",
+  "version": "0.1",
+  "background": {
+    "scripts": [
+      "out/background.js"
+    ]
+  },
+  "permissions": [
+    "commands"
+  ],
+  "commands": {
+    "print-to-console": {
+      "suggested_key": {
+        "default": "Alt+Shift+P"
+      },
+      "description": "Print to console"
+    }
+  }
+}
