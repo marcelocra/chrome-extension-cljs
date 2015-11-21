@@ -1,11 +1,15 @@
 (ns chrome-extensions.background.events
-  (:require [chrome-extensions.background.utils :refer [logging error-handler]]))
+  (:require [chrome-extensions.background.utils :refer [logging
+                                                        error-handler
+                                                        stringify]]))
 
 (enable-console-print!)
 
 (def constants {:commands {:tab-to-window "print-to-console"
                            :print-history-items "print-history-items"}
-                :alarms {:initialize-history "initialize-history"}})
+                :alarms {:initialize-history "initialize-history"}
+                :url-mappings {:google "https://www.google.com"}})
+                               
 
 ;; COMMANDS.
 ;;
@@ -62,3 +66,12 @@
   [alarm]
   (cond
     (alarm? alarm :initialize-history) (initialize-history-items)))
+
+;; OMNIBOX.
+;;
+;; Check for mappings provided via omnibox.
+
+(defn omnibox-url-selector [text diposition]
+  (logging "text" (stringify text))
+  (logging "disposition" (stringify disposition))
+  (.create js/chrome.tabs #js {:url ((keyword text) (:url-mappings constants))}))

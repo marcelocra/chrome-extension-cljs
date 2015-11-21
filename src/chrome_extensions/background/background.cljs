@@ -1,7 +1,8 @@
 (ns chrome-extensions.background.background
   (:require [chrome-extensions.background.events :refer [constants
                                                          command-selector
-                                                         alarm-selector]]
+                                                         alarm-selector
+                                                         omnibox-url-selector]]
             [chrome-extensions.background.utils :refer [open-selection-on-google-maps]]))
 
 (enable-console-print!)
@@ -9,6 +10,7 @@
 ;; Add listeners.
 (.addListener js/chrome.alarms.onAlarm alarm-selector)
 (.addListener js/chrome.commands.onCommand command-selector)
+(.addListener js/chrome.omnibox.onInputEntered omnibox-url-selector)
 
 ;; Wire up the main parts.
 (.create js/chrome.alarms (:initialize-history (:alarms constants))

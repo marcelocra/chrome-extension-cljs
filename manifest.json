@@ -9,13 +9,15 @@
     ]
   },
   "permissions": [
-    "activeTab",
     "alarms",
     "commands",
     "contextMenus",
     "storage",
     "tabs"
   ],
+  "omnibox": {
+    "keyword": "my"
+  },
   "commands": {
     "print-to-console": {
       "suggested_key": {
