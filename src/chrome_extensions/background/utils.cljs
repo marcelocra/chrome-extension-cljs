@@ -9,10 +9,13 @@
   (.stringify js/JSON js-element))
 
 (defn logging
+  ([name] (logging name nil true))
   ([name var] (logging name var true))
   ([name var debug] (if debug
                       (println (str "[" (format-js-date (js/Date.)) "] "
-                                    name " => " var)))))
+                                    name
+                                    (if var
+                                      (str " => " var)))))))
 
 (defn error-handler
   [success-message]
@@ -31,11 +34,11 @@
   [selection-text items]
   (logging "items" (stringify items))
   (let [history-items (aget items "historyItems")
-        ; history-items (.-historyItems items)  ;; => Y U DOESN'T WORK???
         updated-history-items (.concat history-items selection-text)]
     (logging "history items" (stringify history-items))
     (logging "updated history items" (stringify updated-history-items))
-    (if (nil? (.-history items))
+    ;; TODO: Change the line below to (not ...), once history is being used.
+    (if (nil? (aget items "history"))
       (update-storage-history-items updated-history-items))))
 
 (defn- retrieve-and-treat-elements

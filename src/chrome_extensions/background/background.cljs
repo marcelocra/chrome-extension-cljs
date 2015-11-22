@@ -13,7 +13,7 @@
 (.addListener js/chrome.omnibox.onInputEntered omnibox-url-selector)
 
 ;; Wire up the main parts.
-(.create js/chrome.alarms (:initialize-history (:alarms constants))
+(.create js/chrome.alarms (:initialize-history (:alarms @constants))
                           (clj->js {:when (.now js/Date)}))
 (.create js/chrome.contextMenus (clj->js {:title    "Open in Google Maps"
                                           :contexts ["selection"]
