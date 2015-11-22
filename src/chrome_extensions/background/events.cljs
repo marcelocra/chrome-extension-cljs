@@ -8,8 +8,10 @@
 (def constants (atom {:commands {:tab-to-window "print-to-console"
                                  :print-history-items "print-history-items"}
                       :alarms {:initialize-history "initialize-history"}
+                      :dispositions {:current-tab "currentTab"
+                                     :foreground-tab "foregroundTab"
+                                     :background-tab "backgroundTab"}
                       :url-mappings {:google "https://www.google.com"}}))
-
 
 ;; COMMANDS.
 ;;
@@ -63,7 +65,7 @@
 (defn- alarm?
   [alarm k]
   (logging "triggered alarm" (.-name alarm))
-  (logging "alar key to compare" k)
+  (logging "alarm key to compare" k)
   (= (.-name alarm) (k (:alarms @constants))))
 
 (defn alarm-selector
@@ -75,10 +77,31 @@
 ;;
 ;; Check for mappings provided via omnibox.
 
+(defn- fetch-url-for-text
+  [text]
+  ((keyword text) (:url-mappings @constants)))
+
+(defn- disposition-match-with-key?
+  [disposition k]
+  (logging "disposition" disposition)
+  (logging "disposition key to compare" k)
+  (= disposition (k (:dispositions @constants))))
+
 (defn omnibox-url-selector
   [text disposition]
   (logging "text" (stringify text))
   (logging "disposition" (stringify disposition))
-  (let [url ((keyword text) (:url-mappings @constants))]
-    (if url
-      (.create js/chrome.tabs #js {:url url}))))
+  (when-let [url (fetch-url-for-text text)]
+    (let [disposition-for-key (partial disposition-match-with-key? disposition)
+          options {:url url}]
+      (cond
+        ;; TODO: change the key here to :foreground-tab once there is support
+        ;; for that. Now it just creates a new tab next to the current one.
+        (disposition-for-key :current-tab) (get-current-tab
+                                                (fn [tab]
+                                                  (.create js/chrome.tabs
+                                                           (clj->js (assoc options :active true :index (+ 1 (.-index tab)))))))
+        ;; TODO: fix this once the previous TODO is fixed.
+        ;; Not supposed to get here. This is the desired behavior once there is
+        ;; support for choosing either current, foreground or background tabs.
+        (disposition-for-key :current-tab) (.update js/chrome.tabs (clj->js options))))))

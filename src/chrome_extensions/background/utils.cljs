@@ -8,9 +8,11 @@
   [js-element]
   (.stringify js/JSON js-element))
 
+(def ^:private debug? true)
+
 (defn logging
-  ([name] (logging name nil true))
-  ([name var] (logging name var true))
+  ([name] (logging name nil debug?))
+  ([name var] (logging name var debug?))
   ([name var debug] (if debug
                       (println (str "[" (format-js-date (js/Date.)) "] "
                                     name
@@ -37,8 +39,7 @@
         updated-history-items (.concat history-items selection-text)]
     (logging "history items" (stringify history-items))
     (logging "updated history items" (stringify updated-history-items))
-    ;; TODO: Change the line below to (not ...), once history is being used.
-    (if (nil? (aget items "history"))
+    (if (aget items "history")
       (update-storage-history-items updated-history-items))))
 
 (defn- retrieve-and-treat-elements
@@ -52,7 +53,7 @@
   (let [base-url "https://www.google.com/maps?q="
         selection-text (.-selectionText info)
         url (str base-url selection-text)]
-    ; (.create js/chrome.tabs #js {:url url})
+    (.create js/chrome.tabs #js {:url url})
     (logging "selection object" (stringify info))
     (logging "final url" {:url url})
     (retrieve-and-treat-elements selection-text)))

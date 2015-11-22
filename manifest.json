@@ -31,5 +31,6 @@
       },
       "description": "Print all elements saved to history"
     }
-  }
+  },
+  "options_page": "options.html"
 }
