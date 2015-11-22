@@ -18,3 +18,4 @@
 (.create js/chrome.contextMenus (clj->js {:title    "Open in Google Maps"
                                           :contexts ["selection"]
                                           :onclick  open-selection-on-google-maps}))
+(.set js/chrome.storage.local (clj->js {(:tab-ids (:identifiers @constants)) {}})) 

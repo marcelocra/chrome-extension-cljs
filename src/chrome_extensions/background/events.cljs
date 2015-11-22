@@ -1,16 +1,17 @@
 (ns chrome-extensions.background.events
   (:require [chrome-extensions.background.utils :refer [logging
                                                         error-handler
-                                                        stringify]]))
-
+                                                        stringify]]
+            [goog.object]))
 (enable-console-print!)
 
-(def constants (atom {:commands {:tab-to-window "print-to-console"
+(def constants (atom {:commands {:toggle-tab-to-window "toggle-tab-to-window"
                                  :print-history-items "print-history-items"}
                       :alarms {:initialize-history "initialize-history"}
                       :dispositions {:current-tab "currentTab"
                                      :foreground-tab "foregroundTab"
                                      :background-tab "backgroundTab"}
+                      :identifiers {:tab-ids "tabsIds"}
                       :url-mappings {:google "https://www.google.com"}}))
 
 ;; COMMANDS.
@@ -25,11 +26,31 @@
           (fn [tabs]
             (cb (first tabs)))))
 
+(defn- get-and-update-tab-position
+  [tab]
+  (let [tab-ids-key (:tab-ids (:identifiers @constants))]
+    (js/chrome.storage.local.get
+      tab-ids-key
+      (fn [items]
+        (let [tabs (js->clj (aget items tab-ids-key))
+              curr-tab (get tabs (str (.-id tab)))]
+          (logging "tabs" tabs)
+          (logging "curr-tab" curr-tab)
+          (if (nil? curr-tab)
+            (do (js/chrome.windows.create #js {:tabId (.-id tab)})
+                (js/chrome.storage.local.set (clj->js {tab-ids-key (assoc tabs (str (.-id tab)) tab)})))
+            (do (js/chrome.tabs.move (get curr-tab "id")
+                                     #js {:windowId (get curr-tab "windowId")
+                                          :index (get curr-tab "index")}
+                                     (fn [moved-tab]
+                                       (js/chrome.tabs.update (.-id moved-tab)
+                                                              #js {:active true})))
+                (js/chrome.storage.local.set (clj->js {tab-ids-key (dissoc tabs (str (get curr-tab "id")))})))))))))
+
+
 (defn- toggle-tab-to-window
   []
-  (get-current-tab
-    (fn [tab]
-      (.log js/console (.-url tab)))))
+  (get-current-tab get-and-update-tab-position))
 
 (defn- command?
   [command k]
@@ -41,7 +62,7 @@
   [command]
   (cond
      (command? command
-               :tab-to-window) (toggle-tab-to-window)
+               :toggle-tab-to-window) (toggle-tab-to-window)
      (command? command
                :print-history-items) (.get js/chrome.storage.sync
                                            "historyItems"

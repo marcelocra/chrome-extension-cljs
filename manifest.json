@@ -19,11 +19,11 @@
     "keyword": "my"
   },
   "commands": {
-    "print-to-console": {
+    "toggle-tab-to-window": {
       "suggested_key": {
-        "default": "Alt+Shift+P"
+        "default": "Alt+Shift+D"
       },
-      "description": "Print to console"
+      "description": "Move current tab to its own window and back"
     },
     "print-history-items": {
       "suggested_key": {
