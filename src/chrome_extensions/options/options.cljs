@@ -56,12 +56,7 @@
     (-> doc
         (.getElementById "history")
         (.-innerHTML)
-        (set! "")))
-  (.create js/chrome.alarms
-           (:initialize-history (:alarms @constants))
-           #js {:when (.now js/Date)}))
-
-
+        (set! ""))))
 
 (let [doc js/document]
   (.addEventListener doc "DOMContentLoaded" restore-options)

@@ -6,8 +6,7 @@
 (enable-console-print!)
 
 (def constants (atom {:commands {:toggle-tab-to-window "toggle-tab-to-window"
-                                 :print-history-items "print-history-items"}
-                      :alarms {:initialize-history "initialize-history"}
+                                 :print-storage "print-storage"}
                       :dispositions {:current-tab "currentTab"
                                      :foreground-tab "foregroundTab"
                                      :background-tab "backgroundTab"}
@@ -30,7 +29,7 @@
   [tab]
   (let [tab-ids-key (:tab-ids (:identifiers @constants))]
     (js/chrome.storage.local.get
-      tab-ids-key
+      (clj->js {tab-ids-key {}})
       (fn [items]
         (let [tabs (js->clj (aget items tab-ids-key))
               curr-tab (get tabs (str (.-id tab)))]
@@ -64,35 +63,10 @@
      (command? command
                :toggle-tab-to-window) (toggle-tab-to-window)
      (command? command
-               :print-history-items) (.get js/chrome.storage.sync
-                                           "historyItems"
-                                           (fn [items]
-                                             (logging "historyItems" (aget items "historyItems"))))))
-
-;; ALARMS.
-;;
-;; Check for alarms. If alarms are triggered, filter them here.
-
-(defn- initialize-history-items
-  []
-  (.get js/chrome.storage.sync
-        "historyItems"
-        (fn [items]
-          (if (nil? (.-historyItems items))
-            (.set js/chrome.storage.sync
-                  (clj->js {:historyItems []})
-                  (error-handler "Successfully initialized :historyItems"))))))
-
-(defn- alarm?
-  [alarm k]
-  (logging "triggered alarm" (.-name alarm))
-  (logging "alarm key to compare" k)
-  (= (.-name alarm) (k (:alarms @constants))))
-
-(defn alarm-selector
-  [alarm]
-  (cond
-    (alarm? alarm :initialize-history) (initialize-history-items)))
+               :print-storage) (.get js/chrome.storage.sync
+                                     "historyItems"
+                                     (fn [items]
+                                       (logging "historyItems" (aget items "historyItems"))))))
 
 ;; OMNIBOX.
 ;;

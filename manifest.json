@@ -9,7 +9,6 @@
     ]
   },
   "permissions": [
-    "alarms",
     "commands",
     "contextMenus",
     "storage",
@@ -25,11 +24,11 @@
       },
       "description": "Move current tab to its own window and back"
     },
-    "print-history-items": {
+    "print-storage": {
       "suggested_key": {
-        "default": "Alt+Shift+H"
+        "default": "Alt+Shift+P"
       },
-      "description": "Print all elements saved to history"
+      "description": "Debug helper to print chrome.storage items"
     }
   },
   "options_page": "options.html"
