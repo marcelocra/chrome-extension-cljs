@@ -18,7 +18,9 @@
     "keyword": "my"
   },
   "icons": {
-    "16": "send-to-maps-16.png"
+    "16": "images/open-in-google-maps-16.png",
+    "48": "images/chrome-extension-48.png",
+    "128": "images/chrome-extension-128.png"
   },
   "commands": {
     "toggle-tab-to-window": {

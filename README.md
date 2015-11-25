@@ -28,6 +28,8 @@ with less stuff so I can focus on the language.
 
 ## Installation
 
+#### For development
+
 1. Download the [`cljs.jar`][4] to your project folder.
 1. If you are using `tmux`, use the helper script to launch both watchers at
    the same time.
@@ -38,6 +40,12 @@ with less stuff so I can focus on the language.
    - `java -cp src:cljs.jar clojure.main watch-background.clj` generates the `out/background/background.js` file.
    - `java -cp src:cljs.jar clojure.main watch-options.clj` generates the `out/options/options.js` file.
 1. Load your folder in Chrome using the unpacked extensions support.
+
+#### For use
+
+Clone this repository or download and unpack the zip file to a folder and load
+the folder in Chrome, using the unpacked extension support from the developer
+mode.
 
 ## A simpler version of this project, if you are starting
 
