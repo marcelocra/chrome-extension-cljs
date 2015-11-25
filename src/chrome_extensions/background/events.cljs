@@ -27,19 +27,24 @@
       (clj->js {tab-ids-key {}})
       (fn [items]
         (let [tabs (js->clj (aget items tab-ids-key))
-              curr-tab (get tabs (str (.-id tab)))]
+              tab-id (.-id tab)
+              tab-id-str (str tab-id)
+              ;; |tabs| is now a cljs map, with a string of the id of the tab
+              ;; as a key, since js only supports strings as object key.
+              curr-tab (get tabs tab-id-str)
+              curr-tab-id (get curr-tab "id")]
           (logging "tabs" tabs)
           (logging "curr-tab" curr-tab)
           (if (nil? curr-tab)
-            (do (js/chrome.windows.create #js {:tabId (.-id tab)})
-                (js/chrome.storage.local.set (clj->js {tab-ids-key (assoc tabs (str (.-id tab)) tab)})))
-            (do (js/chrome.tabs.move (get curr-tab "id")
+            (do (js/chrome.windows.create #js {:tabId tab-id})
+                (js/chrome.storage.local.set (clj->js {tab-ids-key (assoc tabs tab-id-str tab)})))
+            (do (js/chrome.tabs.move curr-tab-id
                                      #js {:windowId (get curr-tab "windowId")
                                           :index (get curr-tab "index")}
                                      (fn [moved-tab]
                                        (js/chrome.tabs.update (.-id moved-tab)
                                                               #js {:active true})))
-                (js/chrome.storage.local.set (clj->js {tab-ids-key (dissoc tabs (str (get curr-tab "id")))})))))))))
+                (js/chrome.storage.local.set (clj->js {tab-ids-key (dissoc tabs (str curr-tab-id))})))))))))
 
 (defn- toggle-tab-to-window
   []
