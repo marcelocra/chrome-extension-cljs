@@ -1,16 +1,11 @@
 (ns chrome-extensions.background.events
   (:require [chrome-extensions.background.utils :refer [logging
                                                         error-handler
-                                                        stringify]]
-            [goog.object]))
+                                                        stringify]]))
+
 (enable-console-print!)
 
-(def constants (atom {:commands {:toggle-tab-to-window "toggle-tab-to-window"
-                                 :print-storage "print-storage"}
-                      :dispositions {:current-tab "currentTab"
-                                     :foreground-tab "foregroundTab"
-                                     :background-tab "backgroundTab"}
-                      :identifiers {:tab-ids "tabsIds"}
+(def constants (atom {:identifiers {:tab-ids "tabsIds"}
                       :url-mappings {:google "https://www.google.com"}}))
 
 ;; COMMANDS.
@@ -46,27 +41,36 @@
                                                               #js {:active true})))
                 (js/chrome.storage.local.set (clj->js {tab-ids-key (dissoc tabs (str (get curr-tab "id")))})))))))))
 
-
 (defn- toggle-tab-to-window
   []
   (get-current-tab get-and-update-tab-position))
 
-(defn- command?
-  [command k]
-  (logging "command triggered" command)
-  (logging "command key to compare" k)
-  (= command (k (:commands @constants))))
+(defmulti command-selector
+  (fn [command]
+    (do
+      (logging "command triggered" command)
+      (keyword command))))
 
-(defn command-selector
+(defmethod command-selector :default
+  [_]
+  (logging "No command matched"))
+
+(defmethod command-selector :toggle-tab-to-window
+  [_]
+  (toggle-tab-to-window))
+
+(defmethod command-selector :print-storage
+  [_]
+  ;; Prints any element that is being saved to storage.
+  (let [element-to-print "historyItems"]
+    (.get js/chrome.storage.sync
+          element-to-print
+          (fn [items]
+            (logging element-to-print (aget items element-to-print))))))
+
+(defn command-selector-router
   [command]
-  (cond
-     (command? command
-               :toggle-tab-to-window) (toggle-tab-to-window)
-     (command? command
-               :print-storage) (.get js/chrome.storage.sync
-                                     "historyItems"
-                                     (fn [items]
-                                       (logging "historyItems" (aget items "historyItems"))))))
+  (command-selector command))
 
 ;; OMNIBOX.
 ;;
@@ -76,27 +80,37 @@
   [text]
   ((keyword text) (:url-mappings @constants)))
 
-(defn- disposition-match-with-key?
-  [disposition k]
-  (logging "disposition" disposition)
-  (logging "disposition key to compare" k)
-  (= disposition (k (:dispositions @constants))))
+(defmulti omnibox-url-selector
+  (fn [text disposition]
+    (do
+      (logging "text" (stringify text))
+      (logging "disposition" (stringify disposition))
+      disposition)))
 
-(defn omnibox-url-selector
+(defmethod omnibox-url-selector :default
+  [_ _]
+  (logging "No disposition matched"))
+
+;; TODO: change the key here to "foregroundTab" once there is support for that.
+;; Now it just creates a new tab next to the current one.
+(defmethod omnibox-url-selector "currentTab"
+  [text _]
+  (get-current-tab
+    (fn [tab]
+      (when-let [url (fetch-url-for-text text)]
+        (let [options {:url url}]
+          (.create js/chrome.tabs
+                   (clj->js (assoc options :active true :index (+ 1 (.-index tab))))))))))
+
+;; TODO: uncomment this once the previous TODO is fixed.
+;; Not supposed to get here. This is the desired behavior once there is
+;; support for choosing either current, foreground or background tabs.
+; (defmethod omnibox-url-selector "currentTab"
+;   [text _]
+;   (when-let [url (fetch-url-for-text text)]
+;     (let [options {:url url}]
+;       (.update js/chrome.tabs (clj->js options)))))
+
+(defn omnibox-url-selector-router
   [text disposition]
-  (logging "text" (stringify text))
-  (logging "disposition" (stringify disposition))
-  (when-let [url (fetch-url-for-text text)]
-    (let [disposition-for-key (partial disposition-match-with-key? disposition)
-          options {:url url}]
-      (cond
-        ;; TODO: change the key here to :foreground-tab once there is support
-        ;; for that. Now it just creates a new tab next to the current one.
-        (disposition-for-key :current-tab) (get-current-tab
-                                                (fn [tab]
-                                                  (.create js/chrome.tabs
-                                                           (clj->js (assoc options :active true :index (+ 1 (.-index tab)))))))
-        ;; TODO: fix this once the previous TODO is fixed.
-        ;; Not supposed to get here. This is the desired behavior once there is
-        ;; support for choosing either current, foreground or background tabs.
-        (disposition-for-key :current-tab) (.update js/chrome.tabs (clj->js options))))))
+  (omnibox-url-selector text disposition))
