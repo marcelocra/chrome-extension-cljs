@@ -17,6 +17,9 @@
   "omnibox": {
     "keyword": "my"
   },
+  "icons": {
+    "16": "send-to-maps-16.png"
+  },
   "commands": {
     "toggle-tab-to-window": {
       "suggested_key": {

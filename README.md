@@ -17,6 +17,9 @@ Problems:
   further into that.
 + `:advanced` compilation mangling names of storage keys created by me.
   - **Solution**: check the [related question and answer][3] on StackOverflow.
++ Sometimes Chrome commands' `suggested_key` simply doesn't work. If you already
+  set the keys in your manifest and it is not working, try deleting the extension and
+  adding it back again.
 
 
 Indeed it looks like my current workflow will be improved once I go back to
@@ -26,10 +29,14 @@ with less stuff so I can focus on the language.
 ## Installation
 
 1. Download the [`cljs.jar`][4] to your project folder.
-1. Run `java -cp src:cljs.jar clojure.main watch-background.clj` in one terminal
-   window, to generate the `out/background/background.js` file.
-1. Run `java -cp src:cljs.jar clojure.main watch-options.clj` in another
-   terminal window, to generate the `out/options/options.js` file.
+1. If you are using `tmux`, use the helper script to launch both watchers at
+   the same time.
+
+   `$ ./launch-dev-env.sh`
+
+   Otherwise, run each script independently, in separate terminal windows:
+   - `java -cp src:cljs.jar clojure.main watch-background.clj` generates the `out/background/background.js` file.
+   - `java -cp src:cljs.jar clojure.main watch-options.clj` generates the `out/options/options.js` file.
 1. Load your folder in Chrome using the unpacked extensions support.
 
 ## A simpler version of this project, if you are starting
@@ -41,4 +48,3 @@ Please, take a look [here][5] for the very first functional version of this exte
 [3]: http://stackoverflow.com/q/33831723/1814970
 [4]: https://github.com/clojure/clojurescript/releases/download/r1.7.170/cljs.jar
 [5]: https://github.com/marcelocra/chrome-extension-cljs-example/tree/bare-bones
-
