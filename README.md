@@ -47,6 +47,10 @@ Clone this repository or download and unpack the zip file to a folder and load
 the folder in Chrome, using the unpacked extension support from the developer
 mode.
 
+## Development environment
+
+To be able to use the language without the need to spend hours setting up a complex dev environment, just grab `Atom Editor` and the `parinfer` plugin. This is a great combination to start (and maybe later too).
+
 ## A simpler version of this project, if you are starting
 
 Please, take a look [here][5] for the very first functional version of this extension. It might be a good place for you to start, in case you care only about the minimal working version.
