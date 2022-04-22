@@ -1,13 +1,14 @@
 .idea
 cljs.jar
 
-out/*
+out/
+# out/*
 
-!out/background/
-!out/options/
+# !out/background/
+# !out/options/
 
-out/background/*
-out/options/*
+# out/background/*
+# out/options/*
 
-!out/background/background.js
-!out/options/options.js
+# !out/background/background.js
+# !out/options/options.js
