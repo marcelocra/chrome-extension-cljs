@@ -1,0 +1,40 @@
+{
+  "manifest_version": 2,
+  "name": "Chrome Extras",
+  "description": "Provides extra functionality that should be available in Chrome",
+  "version": "0.1",
+  "background": {
+    "scripts": [
+      "resources/public/js/compiled/background/background.js"
+    ]
+  },
+  "permissions": [
+    "commands",
+    "contextMenus",
+    "storage",
+    "tabs"
+  ],
+  "omnibox": {
+    "keyword": "x"
+  },
+  "icons": {
+    "16": "resources/public/images/open-in-google-maps-16.png",
+    "48": "resources/public/images/chrome-extension-48.png",
+    "128": "resources/public/images/chrome-extension-128.png"
+  },
+  "commands": {
+    "toggle-tab-to-window": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "Move current tab to its own window and back"
+    },
+    "print-storage": {
+      "suggested_key": {
+        "default": "Alt+Shift+P"
+      },
+      "description": "Debug helper to print chrome.storage items"
+    }
+  },
+  "options_page": "resources/public/options.html"
+}

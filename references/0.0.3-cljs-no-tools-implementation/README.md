@@ -1,17 +1,8 @@
-# Chrome Extras
+If you are planning to run this code, you'll need a copy of the
+`chrome_extensions.js` extern that you can find in Google Closure repo. Take a
+look [here](https://stackoverflow.com/q/17757898/1814970) for some details.
 
-Some missing features that I believe Chrome should have.
-
-## Versions
-
-This is the first version of the extension. Others, more recent, can be found in
-the `references` folder.
-
-## An example Chrome extension built using ClojureScript
-
-> NOTE: If you are planning to run this code, you'll need a copy of the
-> `chrome_extensions.js` extern that you can find in Google Closure repo. Take a
-> look [here](https://stackoverflow.com/q/17757898/1814970) for some details.
+# An example Chrome extension built using ClojureScript
 
 This is an attempt to create a Chrome extension using ClojureScript. I started
 using `lein` and `cljsbuild` but had lots of problems, most likely due to me

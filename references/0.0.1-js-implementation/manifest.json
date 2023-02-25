@@ -1,0 +1,36 @@
+{
+  "manifest_version": 2,
+  "name": "Send selection to Google Maps",
+  "description": "This extension opens a selection directly on Google Maps",
+  "version": "0.1",
+  "background": {
+    "scripts": [
+      "background.js",
+      "utils.js",
+      "events.js"
+    ]
+  },
+  "browser_action": {
+    "default_icon": "send-to-maps-squared.png"
+  },
+  "permissions": [
+    "alarms",
+    "storage",
+    "contextMenus",
+    "activeTab",
+    "commands",
+    "tabs"
+  ],
+  "commands": {
+    "move-tab-to-window": {
+      "suggested_key": {
+        "default": "Alt+Shift+D"
+      },
+      "description": "Move current tab to its own window"
+    }
+  },
+  "options_page": "options.html",
+  "icons": {
+    "16": "send-to-maps-16.png"
+  }
+}

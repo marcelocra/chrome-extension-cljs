@@ -1,0 +1,27 @@
+figwheel_server.log
+pom.xml
+*jar
+/lib/
+/classes/
+/out/
+/target/
+.lein-deps-sum
+.lein-repl-history
+.lein-plugins/
+.repl
+.nrepl-port
+
+# Stuff added by me.
+.idea
+*iml
+
+resources/public/js/chrome_extensions.js
+resources/public/js/libs/*
+resources/public/js/compiled/*
+
+# If ever needing to include just one file, do as follows.
+
+# resources/public/js/compiled/*
+# !resources/public/js/compiled/background
+# resources/public/js/compiled/background/*
+# !resources/public/js/compiled/background/background.js
